@@ -181,6 +181,7 @@ tr:hover td{background:var(--surface2)}
       <button class="nav-tab" onclick="showTab('hooks')">Hooks & CTA</button>
       <button class="nav-tab" onclick="showTab('onda')">Onda Analysis</button>
       <button class="nav-tab" onclick="showTab('ideas')">50 Ideas</button>
+      <button class="nav-tab" onclick="showTab('inspiration')">Inspiration</button>
       <button class="nav-tab" onclick="showTab('recs')">Recommendations</button>
     </div>
     <span class="nav-meta">Content Intelligence · 450 posts · 9 accounts</span>
@@ -851,6 +852,67 @@ tr:hover td{background:var(--surface2)}
     <div class="idea-card"><div class="idea-num">48</div><div class="idea-title">День тренерки</div><div class="idea-hook">"Вона веде практику о 7-й. Але її ранок почався о 5-й."</div><div class="idea-desc">Behind-the-scenes дня тренерки. Підготовка, практика, відгук після. Глибина роботи команди.</div><div class="idea-tags"><span class="idea-tag">Команда</span><span class="idea-tag">За лаштунками</span><span class="idea-tag viral">Viral 7/10</span></div></div>
     <div class="idea-card"><div class="idea-num">49</div><div class="idea-title">Те чого ніхто не каже про поїздку сам</div><div class="idea-hook">"Ніхто не каже тобі що їхати самій — це і є сенс."</div><div class="idea-desc">Розвінчання страхів solo подорожі. Оптимізовано для поширення подругам хто "думає але не наважується".</div><div class="idea-tags"><span class="idea-tag">Solo</span><span class="idea-tag">Бар'єри</span><span class="idea-tag viral">Viral 9/10</span></div></div>
     <div class="idea-card"><div class="idea-num">50</div><div class="idea-title">Чому ми повертаємось в одне місце</div><div class="idea-hook">"У місця варто повертатися — щоб побачити як змінилася ти."</div><div class="idea-desc">Рілс-версія найкращого поетичного поста Onda. Відеоряд повернення + internal monologue.</div><div class="idea-tags"><span class="idea-tag">Трансформація</span><span class="idea-tag">Поетичний</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+  </div>
+
+</section>
+
+<!-- ════════════════════ INSPIRATION ════════════════════ -->
+<section id="inspiration" class="tab-section">
+
+  <div class="section-eyebrow">Inspiration accounts</div>
+  <div class="section-title">Натхнення</div>
+  <div class="section-sub">Акаунти поза нішею ретритів — естетика, формати, підходи які можна адаптувати для Onda.</div>
+
+  <div id="insp-empty-state" style="display:none;text-align:center;padding:80px 0">
+    <div style="font-family:var(--serif);font-size:28px;font-weight:300;color:var(--text-3);margin-bottom:12px">Акаунти натхнення ще не додані</div>
+    <div style="font-size:13px;color:var(--text-3);line-height:1.8">Додай акаунти в масив <code style="background:var(--surface);padding:2px 8px;border-radius:4px;border:0.5px solid var(--border)">inspiration</code> у файлі <b>accounts.json</b><br>та запусти <b>monthly_update.py</b> для оновлення даних.</div>
+  </div>
+
+  <div id="insp-content">
+
+    <!-- TOP POSTS -->
+    <div class="section-eyebrow" style="margin-top:0">Топ пости місяця</div>
+    <div class="table-wrap" style="margin-bottom:48px">
+      <table>
+        <thead><tr>
+          <th style="width:32px">#</th>
+          <th>Акаунт</th>
+          <th>Дата</th>
+          <th>Формат</th>
+          <th style="text-align:right">Eng</th>
+          <th>Caption</th>
+          <th>Що адаптувати</th>
+        </tr></thead>
+        <tbody id="insp-table-body">
+          <tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:40px">Дані з'являться після першого запуску monthly_update.py з inspiration акаунтами</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ADAPTATION CARDS -->
+    <div class="section-eyebrow">Ідеї адаптацій для Onda</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px" id="insp-adapt-grid">
+      <div style="grid-column:1/-1;background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:32px;text-align:center;color:var(--text-3);font-size:13px">
+        Адаптації з'являться після першого аналізу inspiration акаунтів
+      </div>
+    </div>
+
+    <!-- PATTERNS -->
+    <div class="section-eyebrow">Патерни</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:48px" id="insp-patterns-grid">
+      <div style="grid-column:1/-1;background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:32px;text-align:center;color:var(--text-3);font-size:13px">
+        Патерни з'являться після першого аналізу inspiration акаунтів
+      </div>
+    </div>
+
+    <!-- MONTHLY IDEAS -->
+    <div class="section-eyebrow">Щомісячні ідеї на основі натхнення</div>
+    <div class="ideas-grid" id="insp-ideas-grid">
+      <div style="grid-column:1/-1;background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:32px;text-align:center;color:var(--text-3);font-size:13px">
+        Ідеї з'являться після першого аналізу inspiration акаунтів
+      </div>
+    </div>
+
   </div>
 
 </section>
