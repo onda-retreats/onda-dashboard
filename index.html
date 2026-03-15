@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Onda Retreats — Content Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg:        #ffffff;
+  --surface:   #fbfbfd;
+  --surface2:  #f5f4f0;
+  --border:    #d8d2cb;
+  --border-lt: #ece8e2;
+  --text:      #1d1d1f;
+  --text-2:    #6e6e73;
+  --text-3:    #9e9890;
+  --terra:     #a0522d;
+  --sage:      #4a7c59;
+  --atlantic:  #3d6b8c;
+  --ochre:     #b8860b;
+  --r:         20px;
+  --serif:     'Cormorant Garamond', Georgia, serif;
+  --sans:      'Inter', -apple-system, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:0.5px solid var(--border-lt);padding:0 48px}
+.nav-inner{display:flex;align-items:center;gap:0;height:52px}
+.nav-brand{font-family:var(--serif);font-size:15px;font-weight:300;letter-spacing:0.18em;color:var(--text);margin-right:auto;text-decoration:none}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{font-family:var(--sans);font-size:11px;font-weight:400;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-3);padding:6px 14px;border-radius:30px;cursor:pointer;border:none;background:transparent;transition:all 0.2s;white-space:nowrap}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{background:var(--text);color:#fff}
+.nav-meta{font-size:11px;color:var(--text-3);margin-left:24px;letter-spacing:0.05em;white-space:nowrap}
+
+/* ── SECTIONS ── */
+.tab-section{display:none;padding:80px 48px 120px;max-width:1200px;margin:0 auto;animation:fadeUp 0.4s ease}
+.tab-section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO METRICS ── */
+.hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border-lt);border:0.5px solid var(--border-lt);border-radius:var(--r);overflow:hidden;margin-bottom:80px}
+.metric{background:var(--bg);padding:40px 36px}
+.metric-label{font-size:11px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px}
+.metric-value{font-family:var(--serif);font-size:64px;font-weight:300;line-height:1;letter-spacing:-0.02em;color:var(--text)}
+.metric-value.terra{color:var(--terra)}
+.metric-value.sage{color:var(--sage)}
+.metric-sub{font-size:13px;color:var(--text-2);margin-top:8px}
+.metric-delta{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;margin-top:8px}
+.delta-pos{background:#e8f5ec;color:#2d6b42}
+.delta-neg{background:#fdf0e8;color:#8b3a1a}
+
+/* ── SECTION TITLE ── */
+.section-eyebrow{font-size:11px;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;color:var(--terra);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:48px;font-weight:300;line-height:1.1;letter-spacing:-0.01em;color:var(--text);margin-bottom:8px}
+.section-sub{font-size:17px;color:var(--text-2);line-height:1.6;margin-bottom:48px;max-width:600px}
+
+/* ── CHARTS ── */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:80px}
+.chart-card{background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:32px}
+.chart-title{font-size:11px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:24px}
+.chart-wrap{position:relative;height:240px}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);overflow:hidden;margin-bottom:48px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:10px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-3);padding:16px 20px;text-align:left;border-bottom:0.5px solid var(--border-lt);background:var(--surface)}
+td{padding:14px 20px;border-bottom:0.5px solid var(--border-lt);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+.td-num{font-size:12px;color:var(--text-3);width:32px;font-variant-numeric:tabular-nums}
+.td-eng{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--text);width:80px;font-variant-numeric:tabular-nums}
+.td-cap{max-width:400px}
+.acct-badge{font-size:10px;letter-spacing:0.05em;color:var(--text-2);background:var(--surface2);padding:3px 8px;border-radius:4px;white-space:nowrap}
+.fmt-badge{font-size:10px;letter-spacing:0.05em;padding:3px 9px;border-radius:20px;border:0.5px solid;white-space:nowrap}
+.post-link{color:var(--text);text-decoration:none;line-height:1.4;display:block}
+.post-link:hover{color:var(--terra)}
+.post-link:hover .arrow{color:var(--terra)}
+.arrow{font-size:10px;color:var(--text-3);margin-left:3px}
+
+/* ── HOOK CARDS ── */
+.hooks-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:80px}
+.hook-card{background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:28px;transition:transform 0.25s ease,box-shadow 0.25s ease}
+.hook-card:hover{transform:scale(1.015);box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.hook-num{font-family:var(--serif);font-size:48px;font-weight:300;color:var(--border);line-height:1;margin-bottom:12px}
+.hook-name{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px}
+.hook-template{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--text);background:var(--bg);border-left:2px solid var(--terra);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px;line-height:1.5}
+.hook-example{font-size:13px;color:var(--text-2);font-style:italic;margin-bottom:8px;line-height:1.5}
+.hook-data{font-size:11px;color:var(--text-3);background:var(--surface2);padding:4px 10px;border-radius:4px;display:inline-block}
+.hook-rule{font-size:12px;color:var(--text-2);margin-top:8px;line-height:1.5}
+
+/* ── PATTERN CARDS ── */
+.patterns-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:80px}
+.pattern-card{background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:24px;transition:transform 0.25s ease}
+.pattern-card:hover{transform:scale(1.015);box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.pattern-letter{font-family:var(--serif);font-size:40px;font-weight:300;color:var(--border);line-height:1;margin-bottom:8px}
+.pattern-name{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:6px}
+.pattern-struct{font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5}
+.pattern-example{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--text);border-left:2px solid var(--terra);padding:8px 12px;margin-bottom:8px;line-height:1.4}
+.pattern-example a{color:var(--text);text-decoration:none}
+.pattern-example a:hover{color:var(--terra)}
+.pattern-eng{font-size:11px;color:var(--terra);font-weight:500}
+.pattern-rule{font-size:11px;color:var(--text-3);margin-top:6px;line-height:1.4}
+
+/* ── TONE BARS ── */
+.tone-section{margin-bottom:80px}
+.tone-row{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.tone-label{font-size:13px;color:var(--text-2);width:200px;flex-shrink:0}
+.tone-track{flex:1;height:4px;background:var(--border-lt);border-radius:2px;overflow:hidden}
+.tone-fill{height:4px;border-radius:2px;background:var(--terra);transition:width 1s ease}
+.tone-val{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--text);width:70px;text-align:right}
+
+/* ── CTA CARDS ── */
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:80px}
+.cta-card{display:flex;gap:20px;background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:24px;transition:transform 0.25s ease}
+.cta-card:hover{transform:scale(1.015);box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.cta-num{font-family:var(--serif);font-size:40px;font-weight:300;color:var(--border);line-height:1;flex-shrink:0}
+.cta-text{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--text);margin-bottom:8px;line-height:1.5}
+.cta-why{font-size:12px;color:var(--text-2);line-height:1.5}
+
+/* ── IDEAS ── */
+.cat-divider{display:flex;align-items:center;gap:16px;margin:56px 0 28px}
+.cat-line{flex:1;height:0.5px;background:var(--border-lt)}
+.cat-label{font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-3)}
+.ideas-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.idea-card{background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:24px;transition:transform 0.25s ease}
+.idea-card:hover{transform:scale(1.015);box-shadow:0 8px 32px rgba(0,0,0,0.06)}
+.idea-num{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--border);line-height:1;margin-bottom:8px}
+.idea-title{font-family:var(--serif);font-size:18px;font-weight:300;color:var(--text);margin-bottom:6px;line-height:1.3}
+.idea-hook{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--text-2);margin-bottom:10px;line-height:1.5}
+.idea-desc{font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:10px}
+.idea-tags{display:flex;flex-wrap:wrap;gap:5px}
+.idea-tag{font-size:10px;padding:2px 8px;border-radius:10px;border:0.5px solid var(--border);color:var(--text-3);background:var(--bg)}
+.idea-tag.viral{background:#fdf0e8;color:var(--terra);border-color:var(--terra)30}
+
+/* ── ONDA ANALYSIS ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:48px}
+.compare-card{background:var(--surface);border:0.5px solid var(--border-lt);border-radius:var(--r);padding:24px}
+.compare-title{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px}
+.compare-big{font-family:var(--serif);font-size:48px;font-weight:300;color:var(--text);line-height:1;margin-bottom:4px}
+.compare-sub{font-size:13px;color:var(--text-2)}
+
+/* ── RECOMMENDATIONS ── */
+.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:80px}
+.rec-card{border-radius:var(--r);padding:32px;border:0.5px solid var(--border-lt)}
+.rec-card.green{background:#f0f8f2;border-color:#c8e6d0}
+.rec-card.terra{background:#fdf3ee;border-color:#f0c9b0}
+.rec-card.blue{background:#eef4fb;border-color:#b8d4f0}
+.rec-card.full{grid-column:1/-1;background:var(--surface);border-color:var(--border-lt)}
+.rec-icon{font-size:24px;margin-bottom:12px}
+.rec-title{font-size:13px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--text);margin-bottom:12px}
+.rec-item{font-size:14px;color:var(--text-2);margin-bottom:8px;line-height:1.6;padding-left:16px;position:relative}
+.rec-item::before{content:"—";position:absolute;left:0;color:var(--terra)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:0 20px}
+  .tab-section{padding:40px 20px 80px}
+  .hero-metrics{grid-template-columns:1fr 1fr}
+  .charts-grid,.hooks-grid,.patterns-grid,.cta-grid,.ideas-grid,.rec-grid{grid-template-columns:1fr}
+  .compare-grid{grid-template-columns:1fr 1fr}
+  .section-title{font-size:36px}
+  .metric-value{font-size:48px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-brand">Onda Retreats</span>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('overview')">Overview</button>
+      <button class="nav-tab" onclick="showTab('trends')">Trends</button>
+      <button class="nav-tab" onclick="showTab('hooks')">Hooks & CTA</button>
+      <button class="nav-tab" onclick="showTab('onda')">Onda Analysis</button>
+      <button class="nav-tab" onclick="showTab('ideas')">50 Ideas</button>
+      <button class="nav-tab" onclick="showTab('recs')">Recommendations</button>
+    </div>
+    <span class="nav-meta">Content Intelligence · 450 posts · 9 accounts</span>
+  </div>
+</nav>
+
+<!-- ════════════════════ OVERVIEW ════════════════════ -->
+<section id="overview" class="tab-section active">
+
+  <div class="hero-metrics">
+    <div class="metric">
+      <div class="metric-label">Total posts</div>
+      <div class="metric-value">450</div>
+      <div class="metric-sub">Across 9 accounts</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Overall avg engagement</div>
+      <div class="metric-value terra">261</div>
+      <div class="metric-sub">All accounts combined</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Onda avg engagement</div>
+      <div class="metric-value">158</div>
+      <div class="metric-sub">vs 261 overall <span class="metric-delta delta-neg">-39%</span></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Record engagement</div>
+      <div class="metric-value sage">15,966</div>
+      <div class="metric-sub">scapers.club, Carousel</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Average engagement by account</div>
+      <div class="chart-wrap"><canvas id="chartAcct"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Format performance</div>
+      <div class="chart-wrap"><canvas id="chartFmt"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-eyebrow">Top posts</div>
+  <div class="section-title">Топ-30 публікацій</div>
+  <div class="section-sub">За сумарним engagement (лайки + коментарі) по всіх акаунтах</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Eng.</th>
+          <th>Account</th>
+          <th>Format</th>
+          <th>Caption / Hook</th>
+        </tr>
+      </thead>
+      <tbody>
+    <tr>
+      <td class="td-num">1</td>
+      <td class="td-eng">15,966</td>
+      <td><span class="acct-badge">scapers.club</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DUA9O47jBS9/" target="_blank" class="post-link">Коли температура падає до критичних позначок, а світло зникає на невизначений ча... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">2</td>
+      <td class="td-eng">4,408</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DR92kOgjfZM/" target="_blank" class="post-link">BIRTHDAY BONANZA GIVEAWAY <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">3</td>
+      <td class="td-eng">4,154</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DP3MdumCLxa/" target="_blank" class="post-link">sunrise rituals in santa teresa 🧡 only two spots left to our wellness retreat th... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">4</td>
+      <td class="td-eng">3,873</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTLJnQ9l-AW/" target="_blank" class="post-link">ET VOILÀ - the dates are set 💓 european summer is (almost) around the corner and... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">5</td>
+      <td class="td-eng">2,977</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DUGzhpigc3g/" target="_blank" class="post-link">(SOLD OUT - dm to get on waitlist) It’s Thursday and we’re bringing some HOT new... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">6</td>
+      <td class="td-eng">2,454</td>
+      <td><span class="acct-badge">onda.retreats</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTspJAjiB9b/" target="_blank" class="post-link">Дякую @onda.retreats за досвід ❤️ <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">7</td>
+      <td class="td-eng">2,431</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTud7C0CPhS/" target="_blank" class="post-link">Our Bonanza Surf Retreat Giveaway is still open 🤍 <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">8</td>
+      <td class="td-eng">2,415</td>
+      <td><span class="acct-badge">recreate.surfc</span></td>
+      <td><span class="fmt-badge" style="color:#3D6B8C;border-color:#3D6B8C20;background:#3D6B8C10">Reel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DENfYf_Nbl9/" target="_blank" class="post-link">SURF YOGA CAMP  <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">9</td>
+      <td class="td-eng">2,202</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DPMMlfNAqq4/" target="_blank" class="post-link">GIVEAWAY 🤍 Bonanza Surf Retreat is calling 🤍⁣ <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">10</td>
+      <td class="td-eng">2,090</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DR2KX0yF3j9/" target="_blank" class="post-link">YES - RIO IS FINALLY CALLING 🇧🇷 and we’ve been waiting for a long long time!! <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">11</td>
+      <td class="td-eng">1,973</td>
+      <td><span class="acct-badge">sheshe_retreat</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DMX7K70M51h/" target="_blank" class="post-link">Last Saturday in Berlin, we came together for True Color, an afternoon of mindfu... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">12</td>
+      <td class="td-eng">1,492</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DUJQytYAGep/" target="_blank" class="post-link">The most dreamy dinner and evening with our jungle queen @delasfloresmarin 💚 <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">13</td>
+      <td class="td-eng">1,232</td>
+      <td><span class="acct-badge">balance_trip</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DT0V3c7Deoa/" target="_blank" class="post-link">Українці в Японії. Японці в Україні. Чому ми вирішили вам це розповісти?🇯🇵 <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">14</td>
+      <td class="td-eng">1,180</td>
+      <td><span class="acct-badge">scapers.club</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTSxX71jGDf/" target="_blank" class="post-link">Вогняний кінь вже стрімголов несеться крізь вирій подій, надій, пригод та мрій. ... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">15</td>
+      <td class="td-eng">1,055</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTdl95SDryt/" target="_blank" class="post-link">What May in Biarritz looks like when you team up with @billabongwomenseurope and... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">16</td>
+      <td class="td-eng">989</td>
+      <td><span class="acct-badge">sheshe_retreat</span></td>
+      <td><span class="fmt-badge" style="color:#9E9890;border-color:#9E989020;background:#9E989010">Image</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/C4Pyh32MuYR/" target="_blank" class="post-link">On this #InternationalWomensDay, let our empathy and support go beyond our indiv... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">17</td>
+      <td class="td-eng">971</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DPBhQK0CDsW/" target="_blank" class="post-link">OUR SIGNATURE EDITION 💙 We’ve just wrapped up our last Biarritz retreats for the... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">18</td>
+      <td class="td-eng">935</td>
+      <td><span class="acct-badge">onda.retreats</span></td>
+      <td><span class="fmt-badge" style="color:#3D6B8C;border-color:#3D6B8C20;background:#3D6B8C10">Reel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DRUkddqEjdf/" target="_blank" class="post-link">цей Балі ретрит був найкращою ідеєю провести рік, а @onda.retreats во главі з @k... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">19</td>
+      <td class="td-eng">925</td>
+      <td><span class="acct-badge">onda.retreats</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTud87ijQCl/" target="_blank" class="post-link">Відчувати себе в просторі абсолютного прийняття й безпеки. В просторі, наповнено... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">20</td>
+      <td class="td-eng">915</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DQkGF4IACVu/" target="_blank" class="post-link">Settling into our home for the week🥹🫶✨ <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">21</td>
+      <td class="td-eng">899</td>
+      <td><span class="acct-badge">recreate.surfc</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DK9KzTytobZ/" target="_blank" class="post-link">RECREATE | TENERIFE <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">22</td>
+      <td class="td-eng">879</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DPb2FYaCFqg/" target="_blank" class="post-link">Yes it’s happening 🥹 This coming January we’re heading back to Costa Rica! Join ... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">23</td>
+      <td class="td-eng">789</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DPrKxNnCLCa/" target="_blank" class="post-link">Santa Teresa, Costa Rica - where you spend every moment in complete presence and... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">24</td>
+      <td class="td-eng">782</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTAtXHWl5_Q/" target="_blank" class="post-link">a few of all the magical moments we experienced in 2025 ✨ from Costa Rica to Mal... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">25</td>
+      <td class="td-eng">782</td>
+      <td><span class="acct-badge">sheshe_retreat</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DVGgS1fDIas/" target="_blank" class="post-link">While the calendar says spring begins March 23, seasons don’t change overnight, ... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">26</td>
+      <td class="td-eng">758</td>
+      <td><span class="acct-badge">scapers.club</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DQeeHiQk0jc/" target="_blank" class="post-link">࿐ Mardi Himal ࿐ <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">27</td>
+      <td class="td-eng">755</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTf_wgkF_rG/" target="_blank" class="post-link">Bonanza fam, we’re soon back here 🤎🤏  <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">28</td>
+      <td class="td-eng">738</td>
+      <td><span class="acct-badge">sheshe_retreat</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/C9SWgaVMEYD/" target="_blank" class="post-link">10 things we love(d) about our Portugal retreat: <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">29</td>
+      <td class="td-eng">701</td>
+      <td><span class="acct-badge">bonanzacollect</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DR6_URYl-gQ/" target="_blank" class="post-link">brasil brasil 🇧🇷 just in case you missed the news!!! february 22-28 we’re headin... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">30</td>
+      <td class="td-eng">694</td>
+      <td><span class="acct-badge">onda.retreats</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTz_tvzDA8x/" target="_blank" class="post-link">У місця варто повертатися, аби через них побачити, як змінилася ти. Місця бережу... <span class="arrow">↗</span></a></td>
+    </tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════════ TRENDS ════════════════════ -->
+<section id="trends" class="tab-section">
+
+  <div class="section-eyebrow">Patterns</div>
+  <div class="section-title">Структура caption</div>
+  <div class="section-sub">6 патернів які стабільно генерують найвищий engagement</div>
+
+  <div class="patterns-grid">
+    <div class="pattern-card">
+      <div class="pattern-letter">A</div>
+      <div class="pattern-name">Чиста емоція</div>
+      <div class="pattern-struct">Хук-відчуття → поетичні образи → без CTA</div>
+      <div class="pattern-example"><a href="https://www.instagram.com/p/DTud87ijQCl/" target="_blank">"Відчувати себе в просторі абсолютного прийняття й безпеки..." <span class="arrow">↗</span></a></div>
+      <div class="pattern-eng">872 engagement · Onda</div>
+      <div class="pattern-rule">Ретрит не згадується в першому рядку. Стан → потреба → бренд як відповідь.</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">Б</div>
+      <div class="pattern-name">Арка історії</div>
+      <div class="pattern-struct">Особистий контекст → конфлікт → ретрит як вирішення</div>
+      <div class="pattern-example">"Мій лютий був про відновлення. А потім я побачила @onda.retreats..."</div>
+      <div class="pattern-eng">234 engagement · Onda</div>
+      <div class="pattern-rule">Найкраще від учасниць, не від бренду. Автентичність сигналізує довіру.</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">В</div>
+      <div class="pattern-name">Мінімалізм UGC</div>
+      <div class="pattern-struct">1–3 слова або тег. Візуал несе все.</div>
+      <div class="pattern-example"><a href="https://www.instagram.com/p/DTspJAjiB9b/" target="_blank">"Дякую @onda.retreats за досвід ❤️" <span class="arrow">↗</span></a></div>
+      <div class="pattern-eng">2 454 engagement · Onda #1</div>
+      <div class="pattern-rule">Потрібен дуже сильний візуал. Ризиковано для малих акаунтів.</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">Г</div>
+      <div class="pattern-name">Список / цінність</div>
+      <div class="pattern-struct">"N речей / моментів / причин" — деталі у слайдах</div>
+      <div class="pattern-example"><a href="https://www.instagram.com/p/C9SWgaVMEYD/" target="_blank">"10 things we love(d) about our Portugal retreat:" <span class="arrow">↗</span></a></div>
+      <div class="pattern-eng">738 engagement · sheshe_retreats</div>
+      <div class="pattern-rule">Більше збережень ніж лайків. Краще для saves ніж вірусності.</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">Д</div>
+      <div class="pattern-name">Анонс із терміновістю</div>
+      <div class="pattern-struct">Слово-подія → деталі → опціональна терміновість</div>
+      <div class="pattern-example"><a href="https://www.instagram.com/p/DTPrXgBCLRW/" target="_blank">"Тепер офіційно! Анонсуємо ретрит: 17–22.05.2026" <span class="arrow">↗</span></a></div>
+      <div class="pattern-eng">218 engagement · Onda</div>
+      <div class="pattern-rule">Новинний фрейм, не продажний. Слово-хвилювання перед деталями.</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-letter">Е</div>
+      <div class="pattern-name">Дієслівна вертикаль</div>
+      <div class="pattern-struct">Короткі рядки: дієслово + об'єкт у стовпчик</div>
+      <div class="pattern-example"><a href="https://www.instagram.com/p/DK9KzTytobZ/" target="_blank">"Жити — в готелі. Дихати — океаном. Відчувати — себе." <span class="arrow">↗</span></a></div>
+      <div class="pattern-eng">899 engagement · recreate</div>
+      <div class="pattern-rule">Три рядки максимум. Четвертий — дата або посилання.</div>
+    </div>
+  </div>
+
+  <div class="section-eyebrow">Emotional tone</div>
+  <div class="section-title">Тон vs Engagement</div>
+  <div class="section-sub">Який емоційний регістр дає найвищу залученість</div>
+
+  <div class="tone-section">
+    <div class="tone-row"><span class="tone-label">Трансформаційний</span><div class="tone-track"><div class="tone-fill" style="width:95%"></div></div><span class="tone-val">~950</span></div>
+    <div class="tone-row"><span class="tone-label">UGC / Вдячність</span><div class="tone-track"><div class="tone-fill" style="width:90%"></div></div><span class="tone-val">~850</span></div>
+    <div class="tone-row"><span class="tone-label">Поетичний / Атмосферний</span><div class="tone-track"><div class="tone-fill" style="width:82%"></div></div><span class="tone-val">~740</span></div>
+    <div class="tone-row"><span class="tone-label">Вразливий / Особистий</span><div class="tone-track"><div class="tone-fill" style="width:58%"></div></div><span class="tone-val">~270</span></div>
+    <div class="tone-row"><span class="tone-label">Теплий / Спільнотний</span><div class="tone-track"><div class="tone-fill" style="width:50%"></div></div><span class="tone-val">~230</span></div>
+    <div class="tone-row"><span class="tone-label">Анонс / Новина</span><div class="tone-track"><div class="tone-fill" style="width:44%"></div></div><span class="tone-val">~190</span></div>
+    <div class="tone-row"><span class="tone-label">Освітній / Список</span><div class="tone-track"><div class="tone-fill" style="width:20%"></div></div><span class="tone-val">~80</span></div>
+    <div class="tone-row"><span class="tone-label">Рекламний / Hard Sell</span><div class="tone-track"><div class="tone-fill" style="width:8%;background:#c0392b"></div></div><span class="tone-val">~30</span></div>
+  </div>
+
+</section>
+
+<!-- ════════════════════ HOOKS & CTA ════════════════════ -->
+<section id="hooks" class="tab-section">
+
+  <div class="section-eyebrow">Hook patterns</div>
+  <div class="section-title">10 шаблонів хуків</div>
+  <div class="section-sub">Перевірені техніки відкриваючого рядку — з реальними даними з 450 постів</div>
+
+  <div class="hooks-grid">
+    <div class="hook-card">
+      <div class="hook-num">01</div>
+      <div class="hook-name">Відчуття без назви</div>
+      <div class="hook-template">[Опис внутрішнього стану, який аудиторія впізнає в собі].</div>
+      <div class="hook-example">"Є таке відчуття, коли ти нарешті видихаєш — по-справжньому."</div>
+      <div class="hook-data">Sensory hooks: 7/50 топ постів · avg ~740 eng</div>
+      <div class="hook-rule">Не називай ретрит у першому рядку. Стан → потреба → рішення у каруселі.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">02</div>
+      <div class="hook-name">Локація + ритуал</div>
+      <div class="hook-template">[Локація] [ритуал] — [емоція або стан].</div>
+      <div class="hook-example">"Ранкові ритуали на Лансароте 🧡 — тільки 2 місця залишилось."</div>
+      <div class="hook-data">Location-led: 13/50 топ постів (найчастіший!)</div>
+      <div class="hook-rule">Конкретна локація + момент дня + емоція + ненав'язлива терміновість.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">03</div>
+      <div class="hook-name">ALL CAPS новина</div>
+      <div class="hook-template">[СЛОВО-ПОДІЯ] — [деталь] [емодзі]</div>
+      <div class="hook-example">"ЛАНСАРОТЕ — ДАТИ ВИЗНАЧЕНО 💓 травень вже зовсім близько..."</div>
+      <div class="hook-data">ALL CAPS opener: 9/50 топ постів · avg ~2 000 eng</div>
+      <div class="hook-rule">Максимум 1–2 рази на місяць. Ефект зникає від частого вживання.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">04</div>
+      <div class="hook-name">Суперлатив від учасниці</div>
+      <div class="hook-template">[Найкраще/найважливіше рішення] [період] — [бренд].</div>
+      <div class="hook-example">"найкращою ідеєю цієї весни було — Лансароте з @onda.retreats"</div>
+      <div class="hook-data">UGC testimonial: топ-3 пости Onda · avg 2 454 eng</div>
+      <div class="hook-rule">Перша особа, минулий час, конкретний результат. Ідеально для UGC.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">05</div>
+      <div class="hook-name">Дієслівна вертикаль</div>
+      <div class="hook-template">[Дієслово] — [об'єкт]. [Дієслово] — [об'єкт]. [Дієслово] — [себе].</div>
+      <div class="hook-example">"Іти — по лаві. Дихати — океаном. Відчувати — себе цілою."</div>
+      <div class="hook-data">Ритмічний формат · recreate top: 899 eng</div>
+      <div class="hook-rule">Три рядки — максимум. Четвертий — дата або посилання.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">06</div>
+      <div class="hook-name">Філософська теза</div>
+      <div class="hook-template">[Узагальнення про людину/місце] — [конкретизація].</div>
+      <div class="hook-example">"У місця варто повертатися — щоб побачити, як змінилася ти."</div>
+      <div class="hook-data"><a href="https://www.instagram.com/p/DTz_tvzDA8x/" target="_blank" class="post-link">694 eng · Onda ↗</a></div>
+      <div class="hook-rule">Одне речення, що працює як самостійна цитата. Далі — особиста розповідь.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">07</div>
+      <div class="hook-name">Питання-провокація</div>
+      <div class="hook-template">[Несподіване зіставлення]. Чому ми вирішили вам про це розповісти?</div>
+      <div class="hook-example">"Відпустка vs ретрит. Що насправді відрізняє одне від одного?"</div>
+      <div class="hook-data">Question hook: 3/50 топ постів · avg ~1 232 eng</div>
+      <div class="hook-rule">Питання підвищує свайпи і коментарі. Відповідь — у каруселі.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">08</div>
+      <div class="hook-name">SOLD OUT як хук</div>
+      <div class="hook-template">(SOLD OUT — пиши в direct) [коротка новина про наступний].</div>
+      <div class="hook-example">"(SOLD OUT — пиши в direct щоб потрапити в список) Відкриваємо осінь."</div>
+      <div class="hook-data">Bonanza avg з цим форматом: ~2 977 eng</div>
+      <div class="hook-rule">Закритість як сигнал якості. Використовуй лише коли правда.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">09</div>
+      <div class="hook-name">Хроніка місяця</div>
+      <div class="hook-template">[Місяць] був про [тему]. [Несподіваний поворот або підсумок].</div>
+      <div class="hook-example">"Мій лютий був про відновлення і планування 🍵"</div>
+      <div class="hook-data"><a href="https://www.instagram.com/p/DVTQMtECOJY/" target="_blank" class="post-link">234 eng · Onda партнерський ↗</a></div>
+      <div class="hook-rule">Хроніка + персональна точка зміни. Ідеально для партнерів і учасниць.</div>
+    </div>
+    <div class="hook-card">
+      <div class="hook-num">10</div>
+      <div class="hook-name">Підсумок моментів</div>
+      <div class="hook-template">[N] [моментів/ранків] на [місці] — [висновок].</div>
+      <div class="hook-example">"7 ранків на Лансароте — і жоден не був схожий на попередній."</div>
+      <div class="hook-data">sheshe "10 things": 738 eng · wrap-up формат</div>
+      <div class="hook-rule">Стимулює збереження і теплі коментарі. Ідеально для підсумків ретриту.</div>
+    </div>
+  </div>
+
+  <div class="section-eyebrow">Call to action</div>
+  <div class="section-title">10 CTA без продажу</div>
+  <div class="section-sub">Заклики до дії які не звучать як реклама — і саме тому працюють</div>
+
+  <div class="cta-grid">
+    <div class="cta-card"><div class="cta-num">01</div><div><div class="cta-text">"Напиши в коментарях — коли ти востаннє давала собі тиждень лише для себе?"</div><div class="cta-why">Питання про особистий досвід, не про ретрит. Коментарі зростають, алгоритм просуває пост.</div></div></div>
+    <div class="cta-card"><div class="cta-num">02</div><div><div class="cta-text">"Відмеч ту, з якою хочеш побачити цей захід."</div><div class="cta-why">Природний вірусний механізм без відчуття реклами. Бачимо у bonanza з великим успіхом.</div></div></div>
+    <div class="cta-card"><div class="cta-num">03</div><div><div class="cta-text">"Якщо ти досі тут — це твій знак. Посилання в шапці профілю ♡"</div><div class="cta-why">Вже використовується Onda і працює. Теплий тон, направляє до дії без тиску.</div></div></div>
+    <div class="cta-card"><div class="cta-num">04</div><div><div class="cta-text">"Напиши нам у direct — і будеш першою, хто дізнається про нові дати."</div><div class="cta-why">Відчуття ексклюзивного клубу. Bonanza використовує — дає сильну конверсію.</div></div></div>
+    <div class="cta-card"><div class="cta-num">05</div><div><div class="cta-text">"Збережи цей пост — і повернись до нього, коли будеш готова."</div><div class="cta-why">Без тиску. Алгоритмічно вигідно — збереження сильніший сигнал ніж лайк.</div></div></div>
+    <div class="cta-card"><div class="cta-num">06</div><div><div class="cta-text">"Хто давно мріє про Лансароте? ☀︎ Пишіть нижче."</div><div class="cta-why">Запрошення до діалогу через бажання. Коментарі розкривають теплу аудиторію.</div></div></div>
+    <div class="cta-card"><div class="cta-num">07</div><div><div class="cta-text">"Забирай наш безкоштовний гайд по Лансароте — посилання в шапці."</div><div class="cta-why">Цінність спочатку, продаж потім. Людина асоціює бренд зі щедрістю.</div></div></div>
+    <div class="cta-card"><div class="cta-num">08</div><div><div class="cta-text">"Якщо ти з тих, хто шукає не просто відпочинок, а щось глибше — ти вже знаєш, де нас знайти."</div><div class="cta-why">Опис людини, не продукту. Аудиторія впізнає себе і робить дію самостійно.</div></div></div>
+    <div class="cta-card"><div class="cta-num">09</div><div><div class="cta-text">"Залишилось 2 місця ☀︎ — бронюй на сайті або пиши в direct."</div><div class="cta-why">Конкретне число + 2 шляхи дії. Спрацьовує тільки якщо правда.</div></div></div>
+    <div class="cta-card"><div class="cta-num">10</div><div><div class="cta-text">"Приєднуйся до нас — і до всіх жінок, які вже обрали цей тиждень для себе ♡"</div><div class="cta-why">"Ти приєднуєшся до кола" — а не "ти купуєш послугу". CTA через belonging.</div></div></div>
+  </div>
+
+</section>
+
+<!-- ════════════════════ ONDA ANALYSIS ════════════════════ -->
+<section id="onda" class="tab-section">
+
+  <div class="section-eyebrow">Onda Retreats</div>
+  <div class="section-title">Аналіз акаунту</div>
+  <div class="section-sub">Детальний розбір показників @onda.retreats відносно конкурентів</div>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-title">Середній engagement</div>
+      <div class="compare-big">158</div>
+      <div class="compare-sub">vs 261 загалом по ринку</div>
+      <span class="metric-delta delta-neg" style="margin-top:8px;display:inline-block">-39% від середнього</span>
+    </div>
+    <div class="compare-card">
+      <div class="compare-title">Рекорд Onda</div>
+      <div class="compare-big" style="color:var(--terra)">2 454</div>
+      <div class="compare-sub">UGC пост "Дякую @onda.retreats ❤️"</div>
+      <span class="metric-delta delta-pos" style="margin-top:8px;display:inline-block">+1 453% від avg Onda</span>
+    </div>
+    <div class="compare-card">
+      <div class="compare-title">Позиція на ринку</div>
+      <div class="compare-big">5/9</div>
+      <div class="compare-sub">За середнім engagement</div>
+      <div class="compare-sub" style="margin-top:4px">Попереду: Bonanza (837), Scapers (522), Sheshe (292), Recreate (234)</div>
+    </div>
+  </div>
+
+  <div class="section-eyebrow">Top posts</div>
+  <div class="section-title">Топ-10 постів Onda</div>
+  <div class="section-sub">Найефективніші публікації з аналізом що зробило їх успішними</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Eng.</th><th>vs avg</th><th>Format</th><th>Caption / Hook</th></tr>
+      </thead>
+      <tbody>
+    <tr>
+      <td class="td-num">1</td>
+      <td class="td-eng">2,454</td>
+      <td><span class="delta-pos">+1453%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTspJAjiB9b/" target="_blank" class="post-link">Дякую @onda.retreats за досвід ❤️ <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">2</td>
+      <td class="td-eng">935</td>
+      <td><span class="delta-pos">+492%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Reel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DRUkddqEjdf/" target="_blank" class="post-link">цей Балі ретрит був найкращою ідеєю провести рік, а @onda.retreats во главі з @k... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">3</td>
+      <td class="td-eng">925</td>
+      <td><span class="delta-pos">+485%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTud87ijQCl/" target="_blank" class="post-link">Відчувати себе в просторі абсолютного прийняття й безпеки. В просторі, наповнено... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">4</td>
+      <td class="td-eng">694</td>
+      <td><span class="delta-pos">+339%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTz_tvzDA8x/" target="_blank" class="post-link">У місця варто повертатися, аби через них побачити, як змінилася ти. Місця бережу... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">5</td>
+      <td class="td-eng">295</td>
+      <td><span class="delta-pos">+87%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTVZeTSCEvi/" target="_blank" class="post-link">Я Настя, мама, засновниця бренду аромапахощів @all_trees_i_know і чайна ентузіас... <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">6</td>
+      <td class="td-eng">279</td>
+      <td><span class="delta-pos">+77%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTdLLa8DANN/" target="_blank" class="post-link">Onda and learning through each other 🌀 <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">7</td>
+      <td class="td-eng">263</td>
+      <td><span class="delta-pos">+66%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTjSkEcCOtK/" target="_blank" class="post-link">@onda.retreats 💙 <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">8</td>
+      <td class="td-eng">234</td>
+      <td><span class="delta-pos">+48%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DVTQMtECOJY/" target="_blank" class="post-link">Мій лютий був про відновлення і планування 🍵 <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">9</td>
+      <td class="td-eng">218</td>
+      <td><span class="delta-pos">+38%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTPrXgBCLRW/" target="_blank" class="post-link">Тепер офіційно! Анонсуємо наступний ретрит: 17–22.05.2026 | Лансароте, Іспанія. <span class="arrow">↗</span></a></td>
+    </tr>
+    <tr>
+      <td class="td-num">10</td>
+      <td class="td-eng">218</td>
+      <td><span class="delta-pos">+38%</span></td>
+      <td><span class="fmt-badge" style="color:#4A7C59;border-color:#4A7C5920;background:#4A7C5910">Carousel</span></td>
+      <td class="td-cap"><a href="https://www.instagram.com/p/DTzxY6DiPhQ/" target="_blank" class="post-link">An Ode for Her! <span class="arrow">↗</span></a></td>
+    </tr></tbody>
+    </table>
+  </div>
+
+  <div class="section-eyebrow">Key insight</div>
+  <div class="section-title">Головний висновок</div>
+
+  <div class="rec-grid">
+    <div class="rec-card green">
+      <div class="rec-icon">✦</div>
+      <div class="rec-title">Що Onda робить добре</div>
+      <div class="rec-item">UGC пости від учасниць — #1 і #2 за engagement (2 454 і 935)</div>
+      <div class="rec-item">Поетичний тон — унікальний голос якого немає у конкурентів</div>
+      <div class="rec-item">Carousel формат — правильний вибір (avg 166 vs Video 126)</div>
+      <div class="rec-item">Глибокий і автентичний контент про трансформацію</div>
+    </div>
+    <div class="rec-card terra">
+      <div class="rec-icon">◈</div>
+      <div class="rec-title">Де є ріст</div>
+      <div class="rec-item">Середній eng 158 vs Bonanza 837 — різниця у 5× можлива через більше UGC</div>
+      <div class="rec-item">Освітній контент не використовується (scapers: 15 966 eng)</div>
+      <div class="rec-item">Анонси занадто продажні — Bonanza робить їх як святкування</div>
+      <div class="rec-item">Лише 10 відео з 50 постів — Reel для discovery недовикористаний</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ 50 IDEAS ════════════════════ -->
+<section id="ideas" class="tab-section">
+
+  <div class="section-eyebrow">Content ideas</div>
+  <div class="section-title">50 ідей рілсів для Onda</div>
+  <div class="section-sub">На основі патернів 450 постів з 9 акаунтів. Побудовані на реальних даних.</div>
+
+  <div class="cat-divider"><div class="cat-line"></div><span class="cat-label">Категорія 1 — Трансформація та самовпізнання</span><div class="cat-line"></div></div>
+  <div class="ideas-grid">
+    <div class="idea-card"><div class="idea-num">01</div><div class="idea-title">Ти і твоя нервова система</div><div class="idea-hook">"Твоя нервова система не знає слова 'відпустка'. Але вона знає Лансароте."</div><div class="idea-desc">Освітньо-емоційний рілс: 5 фізіологічних змін за тиждень без стресу. Текстові оверлеї + атмосферне відео.</div><div class="idea-tags"><span class="idea-tag">Educational</span><span class="idea-tag">Трансформація</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">02</div><div class="idea-title">POV: твій перший ранок</div><div class="idea-hook">"6:30. Без будильника. Запах кави і солі. Ти ще не знаєш, ким станеш до п'ятниці."</div><div class="idea-desc">Іммерсивний від першої особи: прокидання → тераса → океан → ранкова йога. Ambient звук.</div><div class="idea-tags"><span class="idea-tag">POV</span><span class="idea-tag">Атмосфера</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">03</div><div class="idea-title">5 днів із незнайомками</div><div class="idea-hook">"День 1: ввічливі. День 3: плачемо разом. День 5: не уявляємо без них."</div><div class="idea-desc">Хронологічна арка через мікромоменти. Висока впізнаваність для тих хто вже був.</div><div class="idea-tags"><span class="idea-tag">Спільнота</span><span class="idea-tag">Хроніка</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">04</div><div class="idea-title">Момент коли ти нарешті видихнула</div><div class="idea-hook">"Є момент на ретриті коли ти розумієш — я приїхала вчасно."</div><div class="idea-desc">Тільки атмосфера. Повільні кадри, ambient sound. Аудиторія сама питає в коментарях.</div><div class="idea-tags"><span class="idea-tag">Атмосферний</span><span class="idea-tag">Без CTA</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">05</div><div class="idea-title">Втома яку не лікує сон</div><div class="idea-hook">"Є втома після якої прокидаєшся такою ж виснаженою. Ти знаєш про що я."</div><div class="idea-desc">Текст-оверлей описує хронічне виснаження → перехід на образи ретриту. Ретрит ніколи не названий.</div><div class="idea-tags"><span class="idea-tag">Самовпізнання</span><span class="idea-tag">Збереження</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">06</div><div class="idea-title">Чому я повернулась вдруге</div><div class="idea-hook">"Перший раз я їхала за відпочинком. Вдруге — за собою."</div><div class="idea-desc">Учасниця-ветеран у кадрі, 60 секунд без сценарію. Найпростіший і найефективніший формат UGC.</div><div class="idea-tags"><span class="idea-tag">UGC</span><span class="idea-tag">Повернення</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">07</div><div class="idea-title">Страхи до ретриту</div><div class="idea-hook">"8 жінок. Одне запитання: чого ти боялась до приїзду?"</div><div class="idea-desc">Монтаж: кожна 5 секунд називає страх. Потім — що відбулось насправді.</div><div class="idea-tags"><span class="idea-tag">UGC</span><span class="idea-tag">Бар'єри</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">08</div><div class="idea-title">Не тіло змінилось. Енергія.</div><div class="idea-hook">"Ніхто не повертається схудлою. Всі повертаються — іншими."</div><div class="idea-desc">Контрує очікування wellness-ретриту. Відео зі свідченнями або мовчазним монтажем.</div><div class="idea-tags"><span class="idea-tag">Трансформація</span><span class="idea-tag">Контр-наратив</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">09</div><div class="idea-title">Вона їхала сама</div><div class="idea-hook">"Вона нікого не знала. Вона приїхала сама. Ось як минув її тиждень."</div><div class="idea-desc">Мінідокументалка про solo-учасницю. Знімає головний страх — соціальну тривогу.</div><div class="idea-tags"><span class="idea-tag">Документальний</span><span class="idea-tag">Solo</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">10</div><div class="idea-title">Читаємо DM після ретриту</div><div class="idea-hook">"Ці повідомлення надійшли після ретриту. Ми нічого не правили."</div><div class="idea-desc">Засновниця читає реальні DM у кадрі. Соціальний доказ без жодного маркетингового слова.</div><div class="idea-tags"><span class="idea-tag">UGC</span><span class="idea-tag">Соціальний доказ</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+  </div>
+
+  <div class="cat-divider"><div class="cat-line"></div><span class="cat-label">Категорія 2 — Локація та атмосфера</span><div class="cat-line"></div></div>
+  <div class="ideas-grid">
+    <div class="idea-card"><div class="idea-num">11</div><div class="idea-title">Лансароте за 60 секунд</div><div class="idea-hook">"Жодного білборду. Жодної реклами. Тільки лава, океан і тиша."</div><div class="idea-desc">Кінематографічний тур — відсутність візуального шуму як головний герой.</div><div class="idea-tags"><span class="idea-tag">Локація</span><span class="idea-tag">Кінематографічний</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">12</div><div class="idea-title">Ранок без порядку денного</div><div class="idea-hook">"Немає нічого запланованого. І це — найважче й найцінніше одночасно."</div><div class="idea-desc">Тільки ambient. Кава, світло, ніхто нікуди не поспішає. Протилежність будням.</div><div class="idea-tags"><span class="idea-tag">Атмосферний</span><span class="idea-tag">Повільне життя</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">13</div><div class="idea-title">Їжа як практика</div><div class="idea-hook">"Ми їмо повільно. Разом. Без телефонів. Звучить просто — але змінює все."</div><div class="idea-desc">За лаштунками приготування, шеф, сервірування, спільне харчування.</div><div class="idea-tags"><span class="idea-tag">Ритуал</span><span class="idea-tag">Диференціатор</span><span class="idea-tag viral">Viral 7/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">14</div><div class="idea-title">П'ятий захід сонця</div><div class="idea-hook">"П'ятий захід. Завтра вже додому. Але тіло ще тут."</div><div class="idea-desc">Відео заходу + текст-оверлей внутрішнього монологу. Ностальгія ще до від'їзду.</div><div class="idea-tags"><span class="idea-tag">Ностальгія</span><span class="idea-tag">Емоційна вершина</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">15</div><div class="idea-title">Звуки ретриту — ASMR</div><div class="idea-hook">(без слів) — тільки хвилі, кавомолка, тихий сміх</div><div class="idea-desc">Жодного мовлення, тільки натуральні звуки. Рідкісний формат у ніші — одразу виділяється.</div><div class="idea-tags"><span class="idea-tag">ASMR</span><span class="idea-tag">Унікальний формат</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">16</div><div class="idea-title">Серфінг: перша хвиля</div><div class="idea-hook">"Ніхто не встає з першого разу. Але всі встають."</div><div class="idea-desc">Реальні кадри першого уроку. Падіння, сміх, тріумф. Автентичність замість ідеальних кадрів.</div><div class="idea-tags"><span class="idea-tag">Документальний</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">17</div><div class="idea-title">Вілла зсередини — тур</div><div class="idea-hook">"Ось де ми проведемо 5 днів. Гортай — і вже починай пакувати."</div><div class="idea-desc">Walk-through відео вілли. Прозорість = довіра. Аудиторія хоче знати де житиме.</div><div class="idea-tags"><span class="idea-tag">Анонс</span><span class="idea-tag">Локація</span><span class="idea-tag viral">Viral 7/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">18</div><div class="idea-title">Балі vs Лансароте</div><div class="idea-hook">"Балі — дика і зелена. Лансароте — мінімалістична і вулканічна. Де більш ти?"</div><div class="idea-desc">Split-screen порівняння. Запит до аудиторії в коментарях. Висока залученість через вибір.</div><div class="idea-tags"><span class="idea-tag viral">Viral 9/10</span><span class="idea-tag">Залученість</span></div></div>
+  </div>
+
+  <div class="cat-divider"><div class="cat-line"></div><span class="cat-label">Категорія 3 — Команда та фасилітатори</span><div class="cat-line"></div></div>
+  <div class="ideas-grid">
+    <div class="idea-card"><div class="idea-num">19</div><div class="idea-title">Жінка яка думає про тебе до приїзду</div><div class="idea-hook">"До того як ти зайдеш у двері — вона вже знає що тобі знадобиться."</div><div class="idea-desc">Портрет фасилітатора: як готується до групи, що помічає, на що звертає увагу.</div><div class="idea-tags"><span class="idea-tag">Команда</span><span class="idea-tag">Довіра</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">20</div><div class="idea-title">Чайна церемонія</div><div class="idea-hook">"Кожен ретрит починається однаково. Сідаємо. Наливаємо чай. Мовчимо."</div><div class="idea-desc">Документує відкривальний ритуал. Сам ритуал є контентом — навмисність початку.</div><div class="idea-tags"><span class="idea-tag">Ритуал</span><span class="idea-tag">Естетичний</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">21</div><div class="idea-title">Що таке вільний рух — насправді</div><div class="idea-hook">"Це не йога. Не танці. Тут немає правильного способу."</div><div class="idea-desc">Кліпи різних жінок що рухаються по-різному. Знімає страх перед незграбністю.</div><div class="idea-tags"><span class="idea-tag">Демістифікація</span><span class="idea-tag">Бар'єри</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">22</div><div class="idea-title">Засновниця про Onda</div><div class="idea-hook">"Я не хотіла створювати ще один wellness-продукт. Я хотіла створити простір."</div><div class="idea-desc">Відверта розмова в кадрі. Будує ідеологічну близькість і лояльність аудиторії.</div><div class="idea-tags"><span class="idea-tag">Засновниця</span><span class="idea-tag">Місія</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">23</div><div class="idea-title">Команда готується</div><div class="idea-hook">"Ви ще летите. А ми вже думаємо про кожну з вас."</div><div class="idea-desc">Behind-the-scenes підготовки: прибирання вілли, розкладка подарунків, перший сніданок.</div><div class="idea-tags"><span class="idea-tag">За лаштунками</span><span class="idea-tag">Турбота</span><span class="idea-tag viral">Viral 7/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">24</div><div class="idea-title">Чому тільки жіночі групи</div><div class="idea-hook">"Жінки трансформуються інакше — разом. Без пояснень. Просто інакше."</div><div class="idea-desc">Пояснення філософії через психологію і досвід. Знімає питання "чому тільки жінки?"</div><div class="idea-tags"><span class="idea-tag">Філософія</span><span class="idea-tag">Заперечення</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+  </div>
+
+  <div class="cat-divider"><div class="cat-line"></div><span class="cat-label">Категорія 4 — Освітній контент (найбільша незайнята ніша)</span><div class="cat-line"></div></div>
+  <div class="ideas-grid">
+    <div class="idea-card"><div class="idea-num">25</div><div class="idea-title">5 сигналів нервової системи</div><div class="idea-hook">"Не вигорання. Не лінь. Твоя нервова система просить про інше."</div><div class="idea-desc">5 соматичних сигналів як тілесних підказок. Ретрит — природний наступний крок, ніколи не названий.</div><div class="idea-tags"><span class="idea-tag">Освітній</span><span class="idea-tag">Збереження</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">26</div><div class="idea-title">Відпустка vs ретрит — чесно</div><div class="idea-hook">"Відпустка — ти тікаєш від. Ретрит — ти повертаєшся до."</div><div class="idea-desc">Контрастний список без засудження відпусток. Знімає головне заперечення аудиторії.</div><div class="idea-tags"><span class="idea-tag">Освітній</span><span class="idea-tag">Заперечення</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">27</div><div class="idea-title">Що відбувається з тілом у стресі</div><div class="idea-hook">"Хронічний стрес — це фізіологічний стан. І тіло виходить з нього повільно."</div><div class="idea-desc">4 фізіологічних зміни за перші 48 годин без стресових тригерів. Відповідь "чому тиждень?"</div><div class="idea-tags"><span class="idea-tag">Освітній</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">28</div><div class="idea-title">Гайд по Лансароте</div><div class="idea-hook">"Ми були там 5 разів. Ось що не покажуть туристичні сайти."</div><div class="idea-desc">Практичні поради + secret spots. Освітній рілс з viral потенціалом для людей що планують подорож.</div><div class="idea-tags"><span class="idea-tag">Локальний гайд</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">29</div><div class="idea-title">5 практик додому з ретриту</div><div class="idea-hook">"Ретрит закінчується. Стан — ні. Ось що ми беремо з собою."</div><div class="idea-desc">Конкретні щоденні практики. Цінність без продажу. Масове збереження.</div><div class="idea-tags"><span class="idea-tag">Практичний</span><span class="idea-tag">Збереження</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">30</div><div class="idea-title">Медитація на захід сонця</div><div class="idea-hook">"Ти можеш зробити це прямо зараз. 5 хвилин."</div><div class="idea-desc">Коротка guided meditation у форматі рілсу. Аудиторія отримує досвід Onda вдома — і хоче більше.</div><div class="idea-tags"><span class="idea-tag">Практика</span><span class="idea-tag">Лід-магніт</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+  </div>
+
+  <div class="cat-divider"><div class="cat-line"></div><span class="cat-label">Категорія 5 — Анонси та FOMO</span><div class="cat-line"></div></div>
+  <div class="ideas-grid">
+    <div class="idea-card"><div class="idea-num">31</div><div class="idea-title">ЛАНСАРОТЕ — ДАТИ ВІДКРИТО</div><div class="idea-hook">"ОФІЦІЙНО 💓 травень на Лансароте — дати визначено."</div><div class="idea-desc">ALL CAPS + дати + дієслівна вертикаль. Класична формула Bonanza в голосі Onda.</div><div class="idea-tags"><span class="idea-tag">Анонс</span><span class="idea-tag">FOMO</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">32</div><div class="idea-title">SOLD OUT — але є список</div><div class="idea-hook">"(SOLD OUT — пиши в direct, щоб потрапити на наступний)"</div><div class="idea-desc">Закритість як сигнал якості. Одночасно анонсує наступний без прямого продажу.</div><div class="idea-tags"><span class="idea-tag">FOMO</span><span class="idea-tag">Терміновість</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">33</div><div class="idea-title">Countdown: 7 днів до ретриту</div><div class="idea-hook">"7 днів. 7 відео. Один ретрит. Починаємо."</div><div class="idea-desc">Серія щоденних коротких рілсів у тиждень перед ретритом. Будує anticipation і FOMO.</div><div class="idea-tags"><span class="idea-tag">Серія</span><span class="idea-tag">FOMO</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">34</div><div class="idea-title">Нова локація — відкриваємо</div><div class="idea-hook">"Ми довго мовчали. Але більше не можемо."</div><div class="idea-desc">Анонс нової локації з інтригою. Свайпи та коментарі "де?!" забезпечені.</div><div class="idea-tags"><span class="idea-tag">Анонс</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">35</div><div class="idea-title">Ранній доступ для спільноти</div><div class="idea-hook">"Перш ніж дати з'явились на сайті — ми поділились з вами."</div><div class="idea-desc">Pre-announcement ексклюзивно для підписників. Будує відчуття внутрішнього кола.</div><div class="idea-tags"><span class="idea-tag">Ексклюзив</span><span class="idea-tag">Спільнота</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+  </div>
+
+  <div class="cat-divider"><div class="cat-line"></div><span class="cat-label">Категорія 6 — Вірусний та нестандартний</span><div class="cat-line"></div></div>
+  <div class="ideas-grid">
+    <div class="idea-card"><div class="idea-num">36</div><div class="idea-title">Гороскоп ретриту</div><div class="idea-hook">"Хто ти на ретриті: та що першою стрибає в океан, чи та що довше всіх сидить у колі?"</div><div class="idea-desc">Типажі учасниць. Масові теги і коментарі. scapers зробили Adventure Horoscope — 1 180 eng.</div><div class="idea-tags"><span class="idea-tag viral">Viral 9/10</span><span class="idea-tag">Інтерактивний</span></div></div>
+    <div class="idea-card"><div class="idea-num">37</div><div class="idea-title">POV: ти заходиш у двері вперше</div><div class="idea-hook">"POV: ти забронювала сама. Тобі трохи страшно. Ти заходиш першою."</div><div class="idea-desc">Іммерсивний від першої особи з приїзду до кінця дня 1. Знімає страх solo поїздки.</div><div class="idea-tags"><span class="idea-tag">POV</span><span class="idea-tag">Бар'єри</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">38</div><div class="idea-title">Останній вечір. Коло.</div><div class="idea-hook">"В останній вечір ми сідаємо разом. Ми не знаємо що буде сказано."</div><div class="idea-desc">Кадри завершального кола + анонімні цитати. Нічого з цього неможливо вигадати.</div><div class="idea-tags"><span class="idea-tag">Ритуал</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">39</div><div class="idea-title">Нікому не кажуть про ретрит — чому</div><div class="idea-hook">"Ніхто не розповідає про важкі моменти на ретриті. Ми розповімо."</div><div class="idea-desc">Чесний контент: складні моменти, самотність. Контр-наратив до ідеальних ретрит-акаунтів.</div><div class="idea-tags"><span class="idea-tag viral">Viral 9/10</span><span class="idea-tag">Чесність</span></div></div>
+    <div class="idea-card"><div class="idea-num">40</div><div class="idea-title">Пакуємось на ретрит</div><div class="idea-hook">"Що брати на тижневий ретрит — і що залишити вдома (підказка: телефон)."</div><div class="idea-desc">Pack with me рілс + список рекомендацій. Масові збереження. Вирішує реальну проблему.</div><div class="idea-tags"><span class="idea-tag">Практичний</span><span class="idea-tag">Збереження</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">41</div><div class="idea-title">Before / after — енергія</div><div class="idea-hook">"Не трансформація тіла. Трансформація енергії. Подивись на різницю."</div><div class="idea-desc">Та сама учасниця день 1 і день 5 — постура, погляд, як говорить. Субвертує формат.</div><div class="idea-tags"><span class="idea-tag">До/після</span><span class="idea-tag">Трансформація</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">42</div><div class="idea-title">Колаборація: їхня точка зору</div><div class="idea-hook">"'Ми не очікували що це вплине на нас так само як на учасниць.'"</div><div class="idea-desc">Партнер розповідає від першої особи. Розширює аудиторію + соціальний доказ через несподіваний голос.</div><div class="idea-tags"><span class="idea-tag">Партнерство</span><span class="idea-tag viral">Viral 7/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">43</div><div class="idea-title">Як ондавський ранок починається</div><div class="idea-hook">"Це не wellness контент. Це просто наш ранок."</div><div class="idea-desc">Реальний ранок без постановки. Гранола, йога, розмови. Автентичність як стратегія.</div><div class="idea-tags"><span class="idea-tag">Документальний</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">44</div><div class="idea-title">Що я розповіла подрузі після</div><div class="idea-hook">"Я повернулась і сказала їй одне речення. Ось яке."</div><div class="idea-desc">Один рядок що підсумовує весь ретрит. Серія від різних учасниць — кожна своє речення.</div><div class="idea-tags"><span class="idea-tag">UGC</span><span class="idea-tag">Мінімалізм</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">45</div><div class="idea-title">Топ питань які нам ставлять</div><div class="idea-hook">"'А якщо я не вмію серфити / робити йогу / бути в групі?' Ось чесна відповідь."</div><div class="idea-desc">Q&A без маркетингового вигладжування. Будує довіру через щирість.</div><div class="idea-tags"><span class="idea-tag">Q&A</span><span class="idea-tag">Довіра</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">46</div><div class="idea-title">Місяць після ретриту</div><div class="idea-hook">"Місяць тому я повернулась. Ось що змінилось."</div><div class="idea-desc">Follow-up від учасниці через місяць. Доказ що ефект ретриту довгостроковий.</div><div class="idea-tags"><span class="idea-tag">UGC</span><span class="idea-tag">Довгостроковий ефект</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">47</div><div class="idea-title">Освітній: острів без фільтрів</div><div class="idea-hook">"Лансароте не виглядає як Instagram. Він виглядає як Марс. І саме тому ми тут."</div><div class="idea-desc">Освітній рілс про унікальність острова. 5 несподіваних рис. Viral потенціал серед travel аудиторії.</div><div class="idea-tags"><span class="idea-tag">Освітній</span><span class="idea-tag">Локація</span><span class="idea-tag viral">Viral 8/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">48</div><div class="idea-title">День тренерки</div><div class="idea-hook">"Вона веде практику о 7-й. Але її ранок почався о 5-й."</div><div class="idea-desc">Behind-the-scenes дня тренерки. Підготовка, практика, відгук після. Глибина роботи команди.</div><div class="idea-tags"><span class="idea-tag">Команда</span><span class="idea-tag">За лаштунками</span><span class="idea-tag viral">Viral 7/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">49</div><div class="idea-title">Те чого ніхто не каже про поїздку сам</div><div class="idea-hook">"Ніхто не каже тобі що їхати самій — це і є сенс."</div><div class="idea-desc">Розвінчання страхів solo подорожі. Оптимізовано для поширення подругам хто "думає але не наважується".</div><div class="idea-tags"><span class="idea-tag">Solo</span><span class="idea-tag">Бар'єри</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+    <div class="idea-card"><div class="idea-num">50</div><div class="idea-title">Чому ми повертаємось в одне місце</div><div class="idea-hook">"У місця варто повертатися — щоб побачити як змінилася ти."</div><div class="idea-desc">Рілс-версія найкращого поетичного поста Onda. Відеоряд повернення + internal monologue.</div><div class="idea-tags"><span class="idea-tag">Трансформація</span><span class="idea-tag">Поетичний</span><span class="idea-tag viral">Viral 9/10</span></div></div>
+  </div>
+
+</section>
+
+<!-- ════════════════════ RECOMMENDATIONS ════════════════════ -->
+<section id="recs" class="tab-section">
+
+  <div class="section-eyebrow">Action plan</div>
+  <div class="section-title">Рекомендації для Onda</div>
+  <div class="section-sub">На основі аналізу 450 постів. Конкретні дії з числовим обґрунтуванням.</div>
+
+  <div class="rec-grid">
+    <div class="rec-card green">
+      <div class="rec-icon">↑</div>
+      <div class="rec-title">Публікувати більше</div>
+      <div class="rec-item">UGC від учасниць — топ-3 пости Onda всі UGC. Просити після кожного ретриту.</div>
+      <div class="rec-item">Освітній контент — scapers: 15 966 eng без згадки ретриту. Незайнята ніша.</div>
+      <div class="rec-item">Поетичні одинаки — "У місця варто повертатися" = 694 eng без CTA.</div>
+      <div class="rec-item">Рілси для discovery — лише 10 з 50 постів відео. recreate Video avg: 239.</div>
+    </div>
+    <div class="rec-card terra">
+      <div class="rec-icon">↓</div>
+      <div class="rec-title">Публікувати менше</div>
+      <div class="rec-item">Ціна в першому рядку — Hard Sell posts avg ~60 eng vs No Sell avg 700+.</div>
+      <div class="rec-item">Довгі списки без хука — "15 Reasons to join" не входить в топ-30.</div>
+      <div class="rec-item">Однотипні анонси без святкування — Bonanza робить це як подію, Onda як оголошення.</div>
+    </div>
+    <div class="rec-card blue">
+      <div class="rec-icon">→</div>
+      <div class="rec-title">3 швидких виграші цього тижня</div>
+      <div class="rec-item">Попроси 3 учасниці написати 1 речення про ретрит — опублікуй як UGC мінімалізм.</div>
+      <div class="rec-item">Зніми один освітній рілс: "5 сигналів що нервова система просить про інше".</div>
+      <div class="rec-item">Наступний анонс зроби в стилі Bonanza: ALL CAPS + святкування + дієслівна вертикаль.</div>
+    </div>
+    <div class="rec-card full">
+      <div class="rec-icon">◈</div>
+      <div class="rec-title">Контент-стратегія на місяць</div>
+      <div class="rec-item">Тиждень 1: 1 освітній рілс (нервова система) + 1 UGC від учасниці + 1 атмосферний carousel</div>
+      <div class="rec-item">Тиждень 2: 1 POV рілс (перший ранок) + 1 анонс у стилі святкування + 1 команда/фасилітатор</div>
+      <div class="rec-item">Тиждень 3: 1 "відпустка vs ретрит" рілс + 1 поетичний carousel + 1 партнерський UGC</div>
+      <div class="rec-item">Тиждень 4: 1 giveaway або SOLD OUT + 1 освітній гайд по Лансароте + 1 closing circle відео</div>
+      <div class="rec-item">Пропорція: 40% трансформація/UGC · 30% освіта · 20% анонси · 10% команда</div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Charts
+const acctCtx = document.getElementById('chartAcct').getContext('2d');
+new Chart(acctCtx, {
+  type: 'bar',
+  data: {
+    labels: ["bonanzacollective", "scapers.club", "sheshe_retreats", "recreate.surfcamp", "onda.retreats", "balance___trip", "wylder.retreats", "viter.vie", "retreats.collective"],
+    datasets: [{
+      data: [837, 522, 292, 234, 158, 155, 38, 21, 12],
+      backgroundColor: ["#A0522D", "#3D6B8C", "#4A7C59", "#B8860B", "#1d1d1f", "#7A6B5A", "#9E9890", "#C4B8A8", "#D8D2CB"],
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      tooltip: { backgroundColor: '#fff', titleColor: '#1d1d1f', bodyColor: '#6e6e73',
+        borderColor: '#e0ddd8', borderWidth: 1, cornerRadius: 10, padding: 12 } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9e9890' } },
+      y: { grid: { color: '#f5f4f0' }, ticks: { font: { size: 10 }, color: '#9e9890' } }
+    }
+  }
+});
+
+const fmtCtx = document.getElementById('chartFmt').getContext('2d');
+new Chart(fmtCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ["Carousel", "Reel", "Image"],
+    datasets: [{
+      data: [255, 110, 56],
+      backgroundColor: ['#a0522d', '#3d6b8c', '#c4b8a8'],
+      borderWidth: 0,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 }, color: '#6e6e73',
+        padding: 16, usePointStyle: true, pointStyleWidth: 8 } },
+      tooltip: { backgroundColor: '#fff', titleColor: '#1d1d1f', bodyColor: '#6e6e73',
+        borderColor: '#e0ddd8', borderWidth: 1, cornerRadius: 10, padding: 12 }
+    }
+  }
+});
+
+// Animate tone bars on load
+setTimeout(() => {
+  document.querySelectorAll('.tone-fill').forEach(el => {
+    el.style.width = el.style.width;
+  });
+}, 300);
+</script>
+</body>
+</html>
