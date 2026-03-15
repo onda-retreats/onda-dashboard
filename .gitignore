@@ -1,0 +1,29 @@
+# Secrets
+.env
+
+# Large JSON scrape files
+*_posts.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+logs/
+*.log
+
+# macOS
+.DS_Store
+
+# Notion setup scripts (internal)
+setup_full.py
+setup_notion_hq.py
+stable_content_hq_setup.py
+notion_fill.py
+notion_min_setup.py
+notion_seed_and_import*.py
+
+# Raw scrape data
+posts.csv
+onda_posts.csv
