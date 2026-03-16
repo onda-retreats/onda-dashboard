@@ -642,8 +642,11 @@ def git_push(month_str: str):
     for cmd in cmds:
         result = subprocess.run(cmd, cwd=BASE_DIR, capture_output=True, text=True, env=env)
         if result.returncode != 0:
-            log(f"  Git ({' '.join(cmd[:2])}): {result.stderr[:200]}")
-            if "nothing to commit" in result.stderr or "nothing to commit" in result.stdout:
+            out = result.stdout + result.stderr
+            log(f"  Git ({' '.join(cmd[:2])}): {out[:200]}")
+            skip_phrases = ("nothing to commit", "nothing added to commit",
+                            "Changes not staged", "up to date", "already up to date")
+            if any(p in out for p in skip_phrases):
                 continue
             return False
     log("  Pushed to GitHub.")
@@ -752,9 +755,9 @@ def main():
     log("── Summary ───────────────────────────────────────────")
     log(f"  Scraped:       {results['scraped']} posts")
     log(f"  New in CSV:    {results['new_posts']}")
-    log(f"  AI recs:       {'✓' if results['ai'] else '✗ (no ANTHROPIC_API_KEY)'}")
+    log(f"  AI recs:       {'✓' if results['ai'] else '✗ (no ANTHROPIC_API_KEY)' if not ANTHROPIC_KEY else '✗'}")
     log(f"  Dashboard:     {'✓' if results['dashboard'] else '✗'}")
-    log(f"  Git push:      {'✓' if results['git'] else '✗ (no GITHUB_TOKEN)'}")
+    log(f"  Git push:      {'✓' if results['git'] else '✗ (no GITHUB_TOKEN)' if not GITHUB_TOKEN else '✗ (push failed)'}")
     log(f"  Telegram:      {'✓' if results['telegram'] else '✗ (no token/chat_id)'}")
     log(f"\nDone — {month_str}\n")
 
