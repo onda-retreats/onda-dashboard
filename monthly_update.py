@@ -624,13 +624,18 @@ def git_push(month_str: str):
         cwd=BASE_DIR, capture_output=True, text=True
     ).stdout.strip()
     if remote_url.startswith("https://"):
-        # Inject token into URL
-        auth_url = remote_url.replace("https://", f"https://{GITHUB_TOKEN}@")
+        # Strip any existing token, then inject fresh one
+        clean_url = re.sub(r"https://[^@]+@", "https://", remote_url)
+        auth_url = clean_url.replace("https://", f"https://{GITHUB_TOKEN}@", 1)
         subprocess.run(["git", "remote", "set-url", "origin", auth_url],
                        cwd=BASE_DIR, capture_output=True)
 
+    # GitHub Pages requires index.html
+    import shutil
+    shutil.copy(BASE_DIR / "dashboard.html", BASE_DIR / "index.html")
+
     cmds = [
-        ["git", "add", "dashboard.html", "all_retreat_accounts.csv", "accounts.json"],
+        ["git", "add", "dashboard.html", "index.html", "all_retreat_accounts.csv", "accounts.json"],
         ["git", "commit", "-m", f"Monthly update: {month_str}"],
         ["git", "push", "origin", "main"],
     ]
@@ -737,7 +742,7 @@ def main():
         + (f" ({stats['onda_delta']:+.1f}%)" if stats.get('onda_delta') is not None else "") + "\n"
         f"🏆 Топ формат: {stats['best_type']} ({stats['best_type_avg']} avg)\n\n"
         f"💡 Топ інсайт: {first_insight}\n\n"
-        f"🔗 Відкрити: <a href='https://katya.github.io/onda-dashboard/'>dashboard</a>"
+        f"🔗 Відкрити: <a href='https://onda-retreats.github.io/onda-dashboard/'>dashboard</a>"
     )
     send_telegram(msg)
     results["telegram"] = True
